@@ -2,19 +2,23 @@ import socketIOClient from "socket.io-client";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const ENDPOINT = "http://localhost:4001/"; // 여기에는 실제 서버의 주소를 입력하세요.
+const ENDPOINT = "http://localhost:4001/";
 const socket = socketIOClient(ENDPOINT);
 
 const Door = () => {
   const navigate = useNavigate();
-  const [roomId, setRoomId] = useState(null);
+  const [roomId, setRoomId] = useState<string | null>(null);
   const [userId, setUserId] = useState("");
+  const [users, setUsers] = useState<string[]>([]);
 
   useEffect(() => {
     socket.on("create", (id) => {
       setRoomId(id);
     });
 
+    socket.on("userJoin", (userList) => {
+      setUsers(userList);
+    });
     return () => {
       socket.disconnect();
     };
@@ -30,8 +34,10 @@ const Door = () => {
       return;
     }
 
-    socket.emit("createRoom");
-    navigate(`/room?roomId=${roomId}`);
+    const updatedUsers = [...users, userId];
+
+    socket.emit("joinRoom", { roomId, userId });
+    navigate(`/room?roomId=${roomId}&users=${updatedUsers.join(",")}`);
     console.log("입장누름");
   };
 
