@@ -7,9 +7,8 @@ const socket = socketIOClient(ENDPOINT);
 
 const Door = () => {
   const navigate = useNavigate();
-  const [roomId, setRoomId] = useState<string | null>(null);
-  const [userId, setUserId] = useState("");
-  const [users, setUsers] = useState<string[]>([]);
+  const [roomId, setRoomId] = useState<string | null>();
+  const [userInputs, setUserInputs] = useState<string[]>([""]);
 
   useEffect(() => {
     socket.on("create", (id) => {
@@ -17,26 +16,36 @@ const Door = () => {
     });
 
     socket.on("userJoin", (userList) => {
-      setUsers(userList);
+      setUserInputs(userList);
     });
-    return () => {
+    window.addEventListener("beforeunload", () => {
       socket.disconnect();
-    };
+    });
   }, []);
 
-  const handleUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserId(e.target.value);
+  const handleUserName =
+    (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newUserInputs = [...userInputs];
+      newUserInputs[index] = e.target.value;
+      setUserInputs(newUserInputs);
+    };
+
+  const addInputFiled = () => {
+    setUserInputs([...userInputs, ""]);
   };
 
   const enterRoom = () => {
-    if (!userId) {
+    if (!userInputs) {
       alert("이름을 입력해주세요");
       return;
     }
 
-    const updatedUsers = [...users, userId];
+    //방 생성
+    socket.emit("createRoom", userInputs);
 
-    socket.emit("joinRoom", { roomId, userId });
+    const updatedUsers = [...userInputs];
+
+    socket.emit("joinRoom", { roomId, userInputs });
     navigate(`/room?roomId=${roomId}&users=${updatedUsers.join(",")}`);
     console.log("입장누름");
   };
@@ -44,12 +53,17 @@ const Door = () => {
   return (
     <div className="App">
       <h1>이름을 입력하세요</h1>
-      <input
-        value={userId}
-        onChange={handleUserName}
-        placeholder="이름을 입력해주세요"
-      ></input>
+      {userInputs.map((userId, index) => (
+        <input
+          key={index}
+          value={userId}
+          onChange={handleUserName(index)}
+          placeholder="이름을 입력해주세요"
+        />
+      ))}
+
       <button onClick={enterRoom}>입장</button>
+      <button onClick={addInputFiled}>사람 추가하기</button>
     </div>
   );
 };

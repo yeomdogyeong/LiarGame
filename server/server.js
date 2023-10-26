@@ -14,18 +14,33 @@ const io = require("socket.io")(server, {
 // 방에 있는 사용자들의 리스트
 let usersInRoom = [];
 
+const generateRoomId = () => {
+  return Math.random().toString(36).substr(2, 8);
+};
+
 io.on("connection", (socket) => {
   console.log("새로운 연결 감지");
+
+  socket.on("createRoom", (userId) => {
+    const newRoomId = generateRoomId(); // 새로운 방 ID 생성
+    socket.emit("create", newRoomId); // 클라이언트에 방 ID 전송
+    console.log(`새로운 방 ${newRoomId}가 생성되었습니다.`);
+  });
 
   //방 입장시
   socket.on("joinRoom", ({ roomId, userId }) => {
     socket.join(roomId);
+    console.log(roomId);
+    // usersInRoom.push(userId);
 
-    // 사용자 리스트에 현재 사용자 추가
-    usersInRoom.push(userId);
+    // 해당 방의 사용자 리스트에 현재 사용자 추가
+    if (!usersInRoom[roomId]) {
+      usersInRoom[roomId] = [];
+    }
+    usersInRoom[roomId].push(userId);
 
     // 방에 있는 모든 사용자에게 사용자 리스트 전송
-    io.to(roomId).emit("userJoin", usersInRoom);
+    io.to(roomId).emit("userJoin", usersInRoom[roomId]);
 
     console.log(`${userId}가 ${roomId}에 입장했습니다.`);
   });
