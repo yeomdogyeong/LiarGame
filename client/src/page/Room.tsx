@@ -1,29 +1,48 @@
+import React, { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
 const Room = () => {
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const users = queryParams.get("users")?.split(",") || [];
-  const roomId = queryParams.get("roomId") || "";
-  console.log(users);
-  const inviteLink = `${window.location.origin}/door?roomId=${roomId}`;
+  const userNames = useMemo(() => {
+    const queryParams = new URLSearchParams(location.search);
+    return queryParams.get("users")?.split(",") || [];
+  }, [location.search]);
 
-  // 초대 링크를 클립보드에 복사하는 함수
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(inviteLink).then(() => {
-      alert("초대 링크가 클립보드에 복사되었습니다.");
-    });
+  const [liar, setLiar] = useState<string | null>(null);
+  const [users, setUsers] = useState<{ name: string; isOpen: boolean }[]>([]);
+
+  useEffect(() => {
+    if (userNames.length > 0) {
+      const randomIndex = Math.floor(Math.random() * userNames.length);
+      setLiar(userNames[randomIndex]);
+      setUsers(userNames.map((name) => ({ name, isOpen: false })));
+    }
+  }, [userNames]);
+
+  const toggleOpen = (index: number) => {
+    setUsers(
+      users.map((user, idx) => {
+        if (idx === index) {
+          return { ...user, isOpen: !user.isOpen };
+        }
+        return user;
+      })
+    );
   };
 
   return (
     <div className="App">
       {users.map((user, idx) => (
-        <div key={idx}>{user}</div>
+        <div key={idx} onClick={() => toggleOpen(idx)}>
+          {user.name}
+          {user.isOpen &&
+            (liar === user.name ? (
+              <span>(라이어)</span>
+            ) : (
+              <span>(일반 시민)</span>
+            ))}
+        </div>
       ))}
-      <div>
-        <p>초대 링크: {inviteLink}</p>
-        <button onClick={copyToClipboard}>링크 복사</button>
-      </div>
     </div>
   );
 };
