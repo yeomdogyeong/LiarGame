@@ -11,10 +11,6 @@ const Door = () => {
   const [userInputs, setUserInputs] = useState<string[]>([""]);
 
   useEffect(() => {
-    socket.on("create", (id) => {
-      setRoomId(id);
-    });
-
     socket.on("userJoin", (userList) => {
       setUserInputs(userList);
     });
@@ -45,9 +41,12 @@ const Door = () => {
 
     const updatedUsers = [...userInputs];
 
-    socket.emit("joinRoom", { roomId, userInputs });
-    navigate(`/room?roomId=${roomId}&users=${updatedUsers.join(",")}`);
-    console.log("입장누름");
+    socket.on("create", (id) => {
+      setRoomId(id);
+      socket.emit("joinRoom", { roomId: id, userInputs });
+      navigate(`/room?roomId=${id}&users=${updatedUsers.join(",")}`);
+      console.log("입장누름");
+    });
   };
 
   return (

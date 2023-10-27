@@ -19,21 +19,32 @@ const Room = () => {
     }
   }, [userNames]);
 
-  const toggleOpen = (index: number) => {
+  useEffect(() => {
+    const closeAll = () => {
+      setUsers(users.map((user) => ({ ...user, isOpen: false })));
+    };
+
+    document.addEventListener("click", closeAll);
+
+    return () => {
+      document.removeEventListener("click", closeAll);
+    };
+  }, [users]);
+
+  const toggleOpen = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation();
     setUsers(
-      users.map((user, idx) => {
-        if (idx === index) {
-          return { ...user, isOpen: !user.isOpen };
-        }
-        return user;
-      })
+      users.map((user, idx) => ({
+        ...user,
+        isOpen: idx === index ? !user.isOpen : false,
+      }))
     );
   };
 
   return (
     <div className="App">
       {users.map((user, idx) => (
-        <div key={idx} onClick={() => toggleOpen(idx)}>
+        <div key={idx} onClick={(e) => toggleOpen(idx, e)}>
           {user.name}
           {user.isOpen &&
             (liar === user.name ? (
