@@ -9,7 +9,7 @@ const Main = () => {
 
   return (
     <div className="App">
-      <h1>Socket.io with CRA</h1>
+      <h1>Who is Liar?</h1>
       <button onClick={handleEneterButton}>방 입장하기</button>
     </div>
   );
