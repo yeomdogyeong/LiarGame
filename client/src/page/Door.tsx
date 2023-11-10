@@ -61,23 +61,23 @@ const Door = () => {
             key={index}
             value={userId}
             onChange={handleUserName(index)}
-            placeholder="이름을 입력해주세요"
-            className="px-4 py-2 border rounded-lg text-gray-700 focus:ring-blue-500 focus:border-blue-500 block w-80"
+            placeholder="정한 닉네임을 입력해주세요"
+            className="px-4 py-2 border rounded-lg outline-none text-gray-700 block w-80"
           />
         ))}
       </div>
       <div className="space-x-4">
         <button
-          onClick={enterRoom}
-          className="px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-        >
-          입장
-        </button>
-        <button
           onClick={addInputFiled}
-          className="px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
+          className="px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-red-400 hover:bg-red-500 transform hover:scale-95 transition duration-200 ease-in"
         >
           사람 추가하기
+        </button>
+        <button
+          onClick={enterRoom}
+          className="px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-400 hover:bg-blue-500 transform hover:scale-95 transition duration-100 ease-in-out"
+        >
+          입장
         </button>
       </div>
     </div>
