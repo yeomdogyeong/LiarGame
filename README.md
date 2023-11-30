@@ -1,7 +1,15 @@
 # 🙊 LiarGame
 
-ReactJS, socket-io, tailwind-css 사용
-모든 페이지 반응형으로 제작되었습니다.
+### 🏓 사용스택
+- ReactJS, socket-io, tailwind-css 사용
+
+### 🧐 특이사항
+- 모든 페이지 반응형으로 제작되었습니다.
+
+### 🥸 실행방법
+- LiarGame/server에서 npm start를 입력해야합니다.
+
+---
 
 - 사람인원수에 맞춰 사용자를 추가할 수 있습니다.
 - 주제와 제시어가 랜덤으로 결정됩니다.
