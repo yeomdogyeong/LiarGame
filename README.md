@@ -22,3 +22,7 @@
 
 <img src="https://github.com/yeomdogyeong/LiarGame/assets/82639552/42413383-d98b-4e8a-8a68-3ae4592c4112" width="400">
 <img src="https://github.com/yeomdogyeong/LiarGame/assets/82639552/684a97a0-3122-4552-bfe9-f17717573aa2" width="400">
+
+---
+
+1.0 version
