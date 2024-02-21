@@ -15,7 +15,7 @@ const Door = () => {
     socket.on("userJoin", (userList) => {
       setUserInputs(userList);
     });
-    window.addEventListener("beforeunload", () => {
+    window.addEventListener("unload", () => {
       socket.disconnect();
     });
   }, []);
@@ -23,6 +23,9 @@ const Door = () => {
   const handleUserName =
     (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const newUserInputs = [...userInputs];
+      const soUserInputs = userInputs;
+      console.log(soUserInputs);
+      console.log(newUserInputs);
       newUserInputs[index] = e.target.value;
       setUserInputs(newUserInputs);
     };
